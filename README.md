@@ -2,11 +2,13 @@
 Código escrito em Python com Biblioteca Pandas para organizar planilha de prospecção de clientes. O Código automatiza a busca dos dados da empresa via API e exporta para planilha excel, organizando-a em campos
 DEVIDO O CÓDIGO SER EXECUTADO EM MÁQUINA, PODE DEMORAR PARA COMPILAR COMPLETAMENTE
 
+#IMPORTA AS BIBLIOTECAS
+
 import pandas as pd
 import re
 import requests
 
-#IMPORTA AS BIBLIOTECAS 
+ # TRANSFORMA OS DADOS EM LISTA
 
 
 l_cnpj = []
@@ -19,12 +21,12 @@ l_muni = []
 l_razao = []
 l_telefone = []
 
-# ANSFORMA OS DADOS EM LISTA
+#LEIA A PLANILHA EXCEL, CRIA NOVA LISTA
 
 df = pd.read_excel(r'C:\Users\User\Desktop\excel\Tabela de Clientes - DI SIENA = 17-01-2023.xlsx')
 lista =[]
 
-#LEIA A PLANILHA EXCEL, CRIA NOVA LISTA
+# DEFINE O CNPJ
 
 for cnpj in df['cnpj']:
     lista.append(cnpj)
@@ -34,13 +36,14 @@ n_lista = []
 for cnpj in lista:
     n_cnpj = re.sub(r'[^0-9]','',str(cnpj))
     n_lista.append(n_cnpj)
-# DEFINE O CNPJ
+
+# LIMPA OS CAMPOS EM BRANCO
 
 for cnpj in n_lista:
     if cnpj == '':
         n_lista.remove(cnpj)
         
-# LIMPA OS CAMPOS EM BRANCO
+# LÊ OS DADOS DA API E FORMATA PARA EXCEL
 
 for cnpj in n_lista:
 
@@ -60,18 +63,17 @@ for cnpj in n_lista:
         l_razao.append(data['razao_social'])
         l_telefone.append(data['ddd_telefone_1'])
         
-    # LÊ OS DADOS DA API E FORMATA PARA EXCEL
+
     
     except:
         pass
 
 
-
-    
+#CRIA AS COLUNAS DA TABELA
 
 excel = {'CNPJ': l_cnpj, 'Situação Cadastral': l_dsc, 'UF': l_uf, 'Bairro':l_bairro,'Logradouro': l_logra, 'Número': l_num, 'Município': l_muni, 'Razão Social': l_razao, 'Telefone': l_telefone}
-#CRIA AS COLUNAS DA TABELA
-df1 = pd.DataFrame (excel, columns=['CNPJ', 'Situação Cadastral', 'UF', 'Bairro', 'Logradouro', 'Número', 'Município', 'Razão Social', 'Telefone'])
 #CRIA DATAFRAME
-df1.to_excel(r'C:\Users\User\Desktop\excel\Clientes CNPJ.xlsx', index=False)
+df1 = pd.DataFrame (excel, columns=['CNPJ', 'Situação Cadastral', 'UF', 'Bairro', 'Logradouro', 'Número', 'Município', 'Razão Social', 'Telefone'])
 #EXPORTA OS DADOS PARA O EXCEL
+df1.to_excel(r'C:\Users\User\Desktop\excel\Clientes CNPJ.xlsx', index=False)
+
